@@ -1,25 +1,10 @@
 export default function HistoryModal({ history, close }) {
-  const formatSummary = (summary) => {
-    return summary
-      .split("\n")
-      .filter((line) => line.trim() !== "")
-      .map((line, index) => {
-        const cleanLine = line.replace(/\*\*/g, "");
-
-        if (cleanLine.startsWith("-")) {
-          return (
-            <div key={index} className="summary-bullet">
-              {cleanLine.replace("-", "").trim()}
-            </div>
-          );
-        }
-
-        return (
-          <div key={index} className="summary-text">
-            {cleanLine}
-          </div>
-        );
-      });
+  const parseSummary = (summary) => {
+    try {
+      return JSON.parse(summary);
+    } catch {
+      return null;
+    }
   };
 
   return (
@@ -27,35 +12,63 @@ export default function HistoryModal({ history, close }) {
       <div className="modal-content">
         <h3>Last 5 Checks</h3>
 
-        {history.map((h) => (
-          <div key={h.id} className="history-item">
+        {history.map((h) => {
+          const parsed = parseSummary(h.summary);
 
-            <div className="history-header">
-              <div>
+          return (
+            <div key={h.id} className="history-item">
+
+              <div className="history-header">
                 <strong>
                   {new Date(h.created_at).toLocaleString()}
                 </strong>
+
+                <div>
+                  <span className="change-percentage">
+                    {h.change_percentage.toFixed(2)}%
+                  </span>
+
+                  {h.is_significant ? (
+                    <span className="badge red">Significant</span>
+                  ) : (
+                    <span className="badge green">Minor</span>
+                  )}
+                </div>
               </div>
 
-              <div>
-                <span className="change-percentage">
-                  {h.change_percentage.toFixed(2)}%
-                </span>
+              {parsed ? (
+                <div className="analysis-box">
 
-                {h.is_significant ? (
-                  <span className="badge red">Significant</span>
-                ) : (
-                  <span className="badge green">Minor</span>
-                )}
-              </div>
+                  {parsed.change_types?.length > 0 && (
+                    <div className="change-types">
+                      {parsed.change_types.map((type, i) => (
+                        <span key={i} className="tag">
+                          {type}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  <ul className="summary-list">
+                    {parsed.summary.map((line, i) => (
+                      <li key={i}>{line}</li>
+                    ))}
+                  </ul>
+
+                  <div className="confidence">
+                    Confidence: {parsed.confidence}%
+                  </div>
+
+                </div>
+              ) : (
+                <div className="summary-text">
+                  {h.summary}
+                </div>
+              )}
+
             </div>
-
-            <div className="summary-section">
-              {formatSummary(h.summary)}
-            </div>
-
-          </div>
-        ))}
+          );
+        })}
 
         <button className="primary" onClick={close}>
           Close
