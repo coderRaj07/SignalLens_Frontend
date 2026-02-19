@@ -208,3 +208,53 @@ button.secondary:hover {
   color: #6b7280;
   margin-top: 6px;
 }
+
+.history-item {
+  background: #f9fafb;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 14px;
+  border: 1px solid #e5e7eb;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.percentage {
+  font-weight: 700;
+}
+
+.badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.badge.significant {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.badge.minor {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.summary-box {
+  margin-top: 8px;
+}
+
+.summary-list {
+  padding-left: 20px;
+  margin: 0;
+}
+
+.summary-list li {
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
